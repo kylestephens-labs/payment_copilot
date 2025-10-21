@@ -13,3 +13,37 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+
+model ProviderAccount {
+  id           String   @id @default(cuid())
+  userId       String
+  provider     String   // 'stripe' | 'paypal' | 'lemonsqueezy' | ...
+  accessToken  String
+  refreshToken String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model Transaction {
+  id         String   @id @default(cuid())
+  userId     String
+  provider   String
+  externalId String   @unique
+  gross      Decimal
+  fee        Decimal  @default(0)
+  net        Decimal
+  currency   String
+  occurredAt DateTime
+  createdAt  DateTime @default(now())
+}
+
+model PayoutPrediction {
+  id         String   @id @default(cuid())
+  userId     String
+  provider   String
+  amount     Decimal
+  expectedAt DateTime
+  basis      String
+  createdAt  DateTime @default(now())
+}
